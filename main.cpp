@@ -42,7 +42,6 @@ struct Node {
 
 	Node* parent;
 
-	// ヒューリスティックを利用
 	Node(int x_, int y_, int g_, int h_, Node* parent_ = nullptr)
 		: x(x_), y(y_), g(g_), h(h_), f(g_ + h_), parent(parent_) {}
 };
@@ -55,12 +54,12 @@ struct CompareNode {
 };
 
 // 座標が有効かのチェック
-bool isValidCoordinate(int x, int y) {
+bool IsValidCoordinate(int x, int y) {
 	return x >= 0 && x < MAP_WIDTH&& y >= 0 && y < MAP_HEIGHT;
 }
 
 // ノードがリストにあるかどうか
-bool isNodeInList(int x, int y, const std::vector<Node*>& nodeList) {
+bool IsNodeInList(int x, int y, const std::vector<Node*>& nodeList) {
 	for (const auto& node : nodeList) {
 		if (node->x == x && node->y == y)
 			return true;
@@ -98,10 +97,10 @@ std::vector<Node*> AstarSearch(const Node& start, const Node& goal) {
 				int newX = current->x + dx;
 				int newY = current->y + dy;
 
-				if (!isValidCoordinate(newX, newY))
+				if (!IsValidCoordinate(newX, newY))
 					continue;
 
-				if (map[newY][newX] == WALL || isNodeInList(newX, newY, closedList))
+				if (map[newY][newX] == WALL || IsNodeInList(newX, newY, closedList))
 					continue;
 
 				int newG = current->g + 1;
@@ -179,11 +178,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		memcpy(preKeys, keys, 256);
 		Novice::GetHitKeyStateAll(keys);
 
+		std::vector<Node*> path;
+
 		///
 		/// ↓更新処理ここから
 		///
 
-		std::vector<Node*> path = AstarSearch(start, goal);
+		path = AstarSearch(start, goal);
 
 		ImGui::Begin("Node Edit");
 		ImGui::SliderInt2("Start Node", &start.x, 0, 10);
